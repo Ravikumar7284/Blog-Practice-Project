@@ -4,6 +4,7 @@ import com.blog.BlogWeb.dto.UserDto;
 import com.blog.BlogWeb.dto.Response;
 import com.blog.BlogWeb.service.UserService;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,31 +25,31 @@ public class UserController {
   private UserService service;
 
   @PostMapping
-  public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+  public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
     UserDto newUserDto = this.service.createUser(userDto);
     return new ResponseEntity<>(newUserDto, HttpStatus.CREATED);
   }
 
   @PutMapping("/{userId}")
-  public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,
+  public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
       @PathVariable Integer userId) {
     UserDto updatedUser = this.service.updateUser(userDto, userId);
     return ResponseEntity.ok(updatedUser);
   }
 
   @DeleteMapping("/{userId}")
-  public ResponseEntity<Response> deleteUser(@PathVariable Integer userId){
+  public ResponseEntity<Response> deleteUser(@PathVariable Integer userId) {
     this.service.deleteUser(userId);
     return new ResponseEntity<>(new Response("User Deleted Successfully", true), HttpStatus.OK);
   }
 
   @GetMapping
-  public ResponseEntity<List<UserDto>> getAllUsers(){
+  public ResponseEntity<List<UserDto>> getAllUsers() {
     return ResponseEntity.ok(this.service.getAllUsers());
   }
 
   @GetMapping("/{userId}")
-  public ResponseEntity<UserDto> getSingleUser(@PathVariable Integer userId){
+  public ResponseEntity<UserDto> getSingleUser(@PathVariable Integer userId) {
     return ResponseEntity.ok(this.service.getUserById(userId));
   }
 }
