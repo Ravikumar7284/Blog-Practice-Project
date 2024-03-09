@@ -48,9 +48,23 @@ public class PostService {
 
   }
 
-//  PostDto updatePost(PostDto postDto, Integer postId);
-//
-//  void deletePost(Integer postId);
+  public PostDto updatePost(PostDto postDto, Integer postId) {
+    Post post = this.repository.findById(postId)
+        .orElseThrow(() -> new ResourceNotFoundException("Post", "Post Id", postId));
+    post.setTitle(postDto.getTitle());
+    post.setContent(postDto.getContent());
+    post.setImageName(post.getImageName());
+
+    Post updatedPost = this.repository.save(post);
+
+    return this.modelMapper.map(updatedPost, PostDto.class);
+  }
+
+  public void deletePost(Integer postId) {
+    Post post = this.repository.findById(postId)
+        .orElseThrow(() -> new ResourceNotFoundException("Post", "Post Id", postId));
+    this.repository.delete(post);
+  }
 
   public List<PostDto> getAllPosts() {
     List<Post> posts = this.repository.findAll();
