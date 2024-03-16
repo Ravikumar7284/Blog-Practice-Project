@@ -1,6 +1,7 @@
 package com.blog.BlogWeb.controllers;
 
 import com.blog.BlogWeb.dto.PostDto;
+import com.blog.BlogWeb.dto.PostResponse;
 import com.blog.BlogWeb.dto.Response;
 import com.blog.BlogWeb.dto.UserDto;
 import com.blog.BlogWeb.entity.Post;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,8 +47,11 @@ public class PostController {
   }
 
   @GetMapping
-  public ResponseEntity<List<PostDto>> getAllPosts() {
-    return ResponseEntity.ok(this.service.getAllPosts());
+  public ResponseEntity<PostResponse> getAllPosts(
+      @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+      @RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize) {
+    PostResponse postResponse = this.service.getAllPosts(pageNumber, pageSize);
+    return new ResponseEntity<PostResponse>(postResponse,HttpStatus.OK);
   }
 
   @GetMapping("/{postId}")
@@ -67,4 +72,10 @@ public class PostController {
     return new ResponseEntity<PostDto>(updatedPost, HttpStatus.OK);
   }
 
+  @GetMapping("/search")
+  public ResponseEntity<List<PostDto>> getPostByKeword(@RequestParam String title) {
+    return ResponseEntity.ok(this.service.searchPost(title));
+  }
+
 }
+

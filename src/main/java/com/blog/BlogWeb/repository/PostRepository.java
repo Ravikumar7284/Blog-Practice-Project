@@ -11,4 +11,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
   List<Post> findByUser(User user);
 
   List<Post> findByCategory(Category category);
+
+  // TODO: 16-03-2024  create the query for search
+//  @Query(value = "SELECT p FROM post p WHERE p.title =:title)",nativeQuery = true)
+  List<Post> findByTitle(String title);
 }

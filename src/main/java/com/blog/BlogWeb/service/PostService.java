@@ -1,6 +1,7 @@
 package com.blog.BlogWeb.service;
 
 import com.blog.BlogWeb.dto.PostDto;
+import com.blog.BlogWeb.dto.PostResponse;
 import com.blog.BlogWeb.entity.Category;
 import com.blog.BlogWeb.entity.Post;
 import com.blog.BlogWeb.entity.User;
@@ -13,6 +14,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -66,11 +70,23 @@ public class PostService {
     this.repository.delete(post);
   }
 
-  public List<PostDto> getAllPosts() {
-    List<Post> posts = this.repository.findAll();
+  public PostResponse getAllPosts(Integer pageNumber, Integer pageSize) {
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    Page<Post> pagePost = this.repository.findAll(pageable);
+
+    List<Post> posts = pagePost.getContent();
     List<PostDto> postDtos = posts.stream().map((post -> this.modelMapper.map(post, PostDto.class)))
         .collect(Collectors.toList());
-    return postDtos;
+
+    PostResponse postResponse = new PostResponse();
+    postResponse.setContent(postDtos);
+    postResponse.setPageNumber(pagePost.getNumber());
+    postResponse.setPageSize(pagePost.getSize());
+    postResponse.setTotalElements(pagePost.getTotalElements());
+    postResponse.setTotalPages(pagePost.getTotalPages());
+    postResponse.setLastPage(pagePost.isLast());
+    return postResponse;
   }
 
   public PostDto getPostById(Integer postId) {
@@ -99,5 +115,11 @@ public class PostService {
     return postDtos;
   }
 
-//  List<PostDto> searchPost(String keyword);
+  public List<PostDto> searchPost(String title) {
+    List<Post> posts = this.repository.findByTitle(title);
+    List<PostDto> postDtos = posts.stream().map((post -> this.modelMapper.map(post, PostDto.class)))
+        .collect(Collectors.toList());
+    return postDtos;
+  }
+
 }
