@@ -4,6 +4,8 @@ import com.blog.BlogWeb.entity.Category;
 import com.blog.BlogWeb.entity.Post;
 import com.blog.BlogWeb.entity.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
@@ -11,6 +13,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
   List<Post> findByUser(User user);
 
   List<Post> findByCategory(Category category);
+
+  Page<Post> findByUser(User user, Pageable pageable);
+
+  Page<Post> findByCategory(Category category, Pageable pageable);
 
   // TODO: 16-03-2024  create the query for search
 //  @Query(value = "SELECT p FROM post p WHERE p.title =:title)",nativeQuery = true)

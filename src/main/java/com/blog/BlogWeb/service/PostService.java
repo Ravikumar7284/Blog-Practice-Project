@@ -95,24 +95,48 @@ public class PostService {
     return this.modelMapper.map(tempPost, PostDto.class);
   }
 
-  public List<PostDto> getPostsByCategory(Integer categoryId) {
+  public PostResponse getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
     Category category = this.categoryRepository.findById(categoryId)
         .orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", categoryId));
-    List<Post> posts = this.repository.findByCategory(category);
-    List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    Page<Post> pagePost = this.repository.findByCategory(category, pageable);
+
+    List<Post> posts = pagePost.getContent();
+    List<PostDto> postDtos = posts.stream().map((post -> this.modelMapper.map(post, PostDto.class)))
         .collect(Collectors.toList());
 
-    return postDtos;
+    PostResponse postResponse = new PostResponse();
+    postResponse.setContent(postDtos);
+    postResponse.setPageNumber(pagePost.getNumber());
+    postResponse.setPageSize(pagePost.getSize());
+    postResponse.setTotalElements(pagePost.getTotalElements());
+    postResponse.setTotalPages(pagePost.getTotalPages());
+    postResponse.setLastPage(pagePost.isLast());
+    return postResponse;
+
   }
 
-  public List<PostDto> getPostsByUser(Integer userId) {
+  public PostResponse getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
+
     User user = this.userRepository.findById(userId)
         .orElseThrow(() -> new ResourceNotFoundException("User", "User id", userId));
-    List<Post> posts = this.repository.findByUser(user);
-    List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    Page<Post> pagePost = this.repository.findByUser(user, pageable);
+
+    List<Post> posts = pagePost.getContent();
+    List<PostDto> postDtos = posts.stream().map((post -> this.modelMapper.map(post, PostDto.class)))
         .collect(Collectors.toList());
 
-    return postDtos;
+    PostResponse postResponse = new PostResponse();
+    postResponse.setContent(postDtos);
+    postResponse.setPageNumber(pagePost.getNumber());
+    postResponse.setPageSize(pagePost.getSize());
+    postResponse.setTotalElements(pagePost.getTotalElements());
+    postResponse.setTotalPages(pagePost.getTotalPages());
+    postResponse.setLastPage(pagePost.isLast());
+    return postResponse;
   }
 
   public List<PostDto> searchPost(String title) {

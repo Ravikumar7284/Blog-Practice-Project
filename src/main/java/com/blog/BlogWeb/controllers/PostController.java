@@ -35,15 +35,19 @@ public class PostController {
   }
 
   @GetMapping("/users/{userId}")
-  public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable Integer userId) {
-    List<PostDto> posts = this.service.getPostsByUser(userId);
-    return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
+  public ResponseEntity<PostResponse> getPostsByUser(@PathVariable Integer userId,
+      @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+      @RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize) {
+    PostResponse postResponse = this.service.getPostsByUser(userId, pageNumber, pageSize);
+    return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
   }
 
   @GetMapping("/categories/{categoryId}")
-  public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable Integer categoryId) {
-    List<PostDto> posts = this.service.getPostsByCategory(categoryId);
-    return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
+  public ResponseEntity<PostResponse> getPostsByCategory(@PathVariable Integer categoryId,
+      @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+      @RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize) {
+    PostResponse postResponse = this.service.getPostsByCategory(categoryId, pageNumber, pageSize);
+    return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
   }
 
   @GetMapping
@@ -51,7 +55,7 @@ public class PostController {
       @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
       @RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize) {
     PostResponse postResponse = this.service.getAllPosts(pageNumber, pageSize);
-    return new ResponseEntity<PostResponse>(postResponse,HttpStatus.OK);
+    return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
   }
 
   @GetMapping("/{postId}")
