@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -70,9 +71,13 @@ public class PostService {
     this.repository.delete(post);
   }
 
-  public PostResponse getAllPosts(Integer pageNumber, Integer pageSize) {
+  public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy,
+      String sortDir) {
 
-    Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending()
+        : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
     Page<Post> pagePost = this.repository.findAll(pageable);
 
     List<Post> posts = pagePost.getContent();
