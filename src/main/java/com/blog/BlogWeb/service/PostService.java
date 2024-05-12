@@ -58,7 +58,7 @@ public class PostService {
         .orElseThrow(() -> new ResourceNotFoundException("Post", "Post Id", postId));
     post.setTitle(postDto.getTitle());
     post.setContent(postDto.getContent());
-    post.setImageName(post.getImageName());
+    post.setImageName(postDto.getImageName());
 
     Post updatedPost = this.repository.save(post);
 

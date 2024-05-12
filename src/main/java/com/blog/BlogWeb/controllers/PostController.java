@@ -4,12 +4,12 @@ import com.blog.BlogWeb.config.Constants;
 import com.blog.BlogWeb.dto.PostDto;
 import com.blog.BlogWeb.dto.PostResponse;
 import com.blog.BlogWeb.dto.Response;
-import com.blog.BlogWeb.dto.UserDto;
-import com.blog.BlogWeb.entity.Post;
+import com.blog.BlogWeb.service.FileService;
 import com.blog.BlogWeb.service.PostService;
+import java.io.IOException;
 import java.util.List;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -28,6 +29,11 @@ public class PostController {
 
   @Autowired
   private PostService service;
+  @Autowired
+  private FileService fileService;
+
+  @Value("${project.image}")
+  private String path;
 
   @PostMapping("/users/{userId}/categories/{categoryId}")
   public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto,
@@ -84,6 +90,18 @@ public class PostController {
   public ResponseEntity<List<PostDto>> getPostByKeword(@RequestParam String title) {
     List<PostDto> posts = this.service.searchPost(title);
     return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
+  }
+
+  @PostMapping("/file/upload/{postId}")
+  public ResponseEntity<PostDto> uploadFile(@RequestParam("file") MultipartFile file,
+      @PathVariable("postId") Integer postId) throws IOException {
+    PostDto postDto = this.service.getPostById(postId);
+    String fileName = this.fileService.uploadImage(path, file);
+    postDto.setImageName(fileName);
+    PostDto updatePost = this.service.updatePost(postDto, postId);
+    return new ResponseEntity<PostDto>(updatePost, HttpStatus.OK);
+//TODO: Getting file uppload issue as  Failed to perform cleanup of multipart items and java.io.UncheckedIOException: Cannot delete C:\Users\admin\AppData\Local\Temp\tomcat.9001.15906755760863078770\work\Tomcat\localhost\ROOT\upload_a38f506d_b8e5_40d4_8d43_099f24d4ee63_00000000.tmp
+// TODO : reminder duration is 7:53 hrs
   }
 
 
