@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class FileService {
 
@@ -19,9 +20,10 @@ public class FileService {
     String randomID = UUID.randomUUID().toString();
     String tempFileName = randomID.concat(fileName.substring(fileName.lastIndexOf(".")));
     String filePath = path + File.separator + tempFileName;
-    File tempFile = new File(path);
-    if (!tempFile.exists()) {
-      tempFile.mkdir();
+    File tempFile = new File(filePath);
+    File parentDir = tempFile.getParentFile();
+    if (!parentDir.exists()) {
+      parentDir.mkdirs();
     }
 
     Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);

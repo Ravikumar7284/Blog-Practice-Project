@@ -7,11 +7,15 @@ import com.blog.BlogWeb.dto.Response;
 import com.blog.BlogWeb.service.FileService;
 import com.blog.BlogWeb.service.PostService;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -100,8 +104,13 @@ public class PostController {
     postDto.setImageName(fileName);
     PostDto updatePost = this.service.updatePost(postDto, postId);
     return new ResponseEntity<PostDto>(updatePost, HttpStatus.OK);
-//TODO: Getting file uppload issue as  Failed to perform cleanup of multipart items and java.io.UncheckedIOException: Cannot delete C:\Users\admin\AppData\Local\Temp\tomcat.9001.15906755760863078770\work\Tomcat\localhost\ROOT\upload_a38f506d_b8e5_40d4_8d43_099f24d4ee63_00000000.tmp
-// TODO : reminder duration is 7:53 hrs
+  }
+
+  @GetMapping("/file/{fileName}")
+  public void downloadFile(@PathVariable("fileName") String fileName, HttpServletResponse response) throws IOException{
+    InputStream inputStream = this.fileService.getResource(path,fileName);
+    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+    StreamUtils.copy(inputStream,response.getOutputStream());
   }
 
 
