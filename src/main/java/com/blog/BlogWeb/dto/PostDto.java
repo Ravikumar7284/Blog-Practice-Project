@@ -1,8 +1,10 @@
 package com.blog.BlogWeb.dto;
 
 import com.blog.BlogWeb.entity.Category;
+import com.blog.BlogWeb.entity.Comment;
 import com.blog.BlogWeb.entity.User;
 import java.util.Date;
+import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
@@ -27,5 +29,7 @@ public class PostDto {
   private CategoryDto category;
 
   private UserDto user;
+
+  private Set<Comment> comments;
 
 }
