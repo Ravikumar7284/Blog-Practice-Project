@@ -40,8 +40,8 @@ public class User {
   private String about;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Post> posts = new ArrayList<>();
+  private List<Post> post = new ArrayList<>();
 
   @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-  private Set<Comment> comments = new HashSet<>();
+  private Set<Comment> comment = new HashSet<>();
 }

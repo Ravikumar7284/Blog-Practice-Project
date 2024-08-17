@@ -4,6 +4,7 @@ import com.blog.BlogWeb.entity.Category;
 import com.blog.BlogWeb.entity.Comment;
 import com.blog.BlogWeb.entity.User;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -30,6 +31,6 @@ public class PostDto {
 
   private UserDto user;
 
-  private Set<Comment> comments;
+  private List<CommentDto> comment;
 
 }

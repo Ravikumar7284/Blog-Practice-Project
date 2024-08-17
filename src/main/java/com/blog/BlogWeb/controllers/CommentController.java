@@ -34,6 +34,4 @@ public class CommentController {
     return new Response("comment is successfully deleted", true);
   }
 
-  //TODO :correct create and delete comment API
-
 }
