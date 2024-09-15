@@ -1,6 +1,7 @@
 package com.blog.BlogWeb.dto;
 
 import com.blog.BlogWeb.util.ReservedWord;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -20,8 +21,9 @@ public class UserDto {
   @Email(message = "Email is not valid")
   private String email;
 
+  @JsonIgnore
   @NotEmpty
-  @Size(min = 4, max = 50, message = "Password must be min of 4 and max to 50 characters")
+  @Size(min = 4, message = "Password must be min of 4 characters")
   @ReservedWord(reservedWord = "password")
   private String password;
 
