@@ -1,7 +1,9 @@
 package com.blog.BlogWeb.dto;
 
+import com.blog.BlogWeb.entity.Role;
 import com.blog.BlogWeb.util.ReservedWord;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -29,5 +31,7 @@ public class UserDto {
 
   @NotEmpty
   private String about;
+
+  private Set<Role> role;
 
 }

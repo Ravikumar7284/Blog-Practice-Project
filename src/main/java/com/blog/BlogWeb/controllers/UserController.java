@@ -22,34 +22,41 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   @Autowired
-  private UserService service;
+  private UserService userService;
 
   @PostMapping
   public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-    UserDto newUserDto = this.service.createUser(userDto);
+    UserDto newUserDto = this.userService.createUser(userDto);
     return new ResponseEntity<>(newUserDto, HttpStatus.CREATED);
   }
 
   @PutMapping("/{userId}")
   public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
       @PathVariable Integer userId) {
-    UserDto updatedUser = this.service.updateUser(userDto, userId);
+    UserDto updatedUser = this.userService.updateUser(userDto, userId);
     return ResponseEntity.ok(updatedUser);
   }
 
   @DeleteMapping("/{userId}")
   public ResponseEntity<Response> deleteUser(@PathVariable Integer userId) {
-    this.service.deleteUser(userId);
+    this.userService.deleteUser(userId);
     return new ResponseEntity<>(new Response("User Deleted Successfully", true), HttpStatus.OK);
   }
 
   @GetMapping
   public ResponseEntity<List<UserDto>> getAllUsers() {
-    return ResponseEntity.ok(this.service.getAllUsers());
+    return ResponseEntity.ok(this.userService.getAllUsers());
   }
 
   @GetMapping("/{userId}")
   public ResponseEntity<UserDto> getSingleUser(@PathVariable Integer userId) {
-    return ResponseEntity.ok(this.service.getUserById(userId));
+    return ResponseEntity.ok(this.userService.getUserById(userId));
+  }
+
+  @PostMapping("/{userId}/roles/{roleId}")
+  public ResponseEntity<UserDto> assignedRoleToUser(@PathVariable Integer userId,
+      @PathVariable Integer roleId) {
+    UserDto assignedUserDto = this.userService.assignRoleToUser(userId, roleId);
+    return new ResponseEntity<UserDto>(assignedUserDto, HttpStatus.OK);
   }
 }
