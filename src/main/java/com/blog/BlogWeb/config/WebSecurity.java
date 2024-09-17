@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -37,7 +37,39 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeHttpRequests()
-        .antMatchers("/api/auth/login").permitAll()
+        .antMatchers(Constants.LOGIN_URL).permitAll()
+
+        .antMatchers(HttpMethod.GET,Constants.USER_BASE_URL).hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.GET,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.POST,Constants.USER_BASE_URL+"/*/roles/*").hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.POST,Constants.USER_BASE_URL).hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.PUT,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.DELETE,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
+
+        .antMatchers(HttpMethod.GET,Constants.ROLE_BASE_URL).hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.POST,Constants.ROLE_BASE_URL).hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.DELETE,Constants.ROLE_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
+
+        .antMatchers(HttpMethod.GET, Constants.CATEGORY_BASE_URL).permitAll()
+        .antMatchers(HttpMethod.GET, Constants.CATEGORY_BASE_URL+"/*").permitAll()
+        .antMatchers(HttpMethod.POST, Constants.CATEGORY_BASE_URL).hasAnyRole(Constants.ADMIN, Constants.USER)
+        .antMatchers(HttpMethod.PUT, Constants.CATEGORY_BASE_URL+"/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+        .antMatchers(HttpMethod.DELETE, Constants.CATEGORY_BASE_URL+"/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+
+        .antMatchers(HttpMethod.POST, Constants.COMMENT_BASE_URL+"/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+        .antMatchers(HttpMethod.DELETE, Constants.COMMENT_BASE_URL+"/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+
+        .antMatchers(HttpMethod.GET, Constants.POST_BASE_URL).permitAll()
+        .antMatchers(HttpMethod.GET, Constants.POST_BASE_URL+"/*").permitAll()
+        .antMatchers(HttpMethod.GET, Constants.POST_BASE_URL+"/users/*").hasAnyRole(Constants.ADMIN,Constants.USER)
+        .antMatchers(HttpMethod.GET, Constants.POST_BASE_URL+"categories/*").permitAll()
+        .antMatchers(HttpMethod.GET,Constants.POST_BASE_URL+"/search").permitAll()
+        .antMatchers(HttpMethod.GET, Constants.POST_BASE_URL+"/file/*").hasAnyRole(Constants.ADMIN,Constants.USER)
+        .antMatchers(HttpMethod.POST, Constants.POST_BASE_URL+"/users/*/categories/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+        .antMatchers(HttpMethod.POST, Constants.POST_BASE_URL+"/file/upload/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+        .antMatchers(HttpMethod.PUT, Constants.POST_BASE_URL+"/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+        .antMatchers(HttpMethod.DELETE, Constants.POST_BASE_URL+"/*").hasAnyRole(Constants.ADMIN, Constants.USER)
+
         .anyRequest()
         .authenticated()
         .and()
@@ -60,7 +92,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public AuthenticationManager authenticationManagerBean() throws Exception{
+  public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
   }
 }

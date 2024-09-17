@@ -1,9 +1,12 @@
 package com.blog.BlogWeb.security;
 
+import com.blog.BlogWeb.config.Constants;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String username = null;
     String token;
 
+    List<String> urlList = Arrays.asList(Constants.LOGIN_URL,Constants.POST_BASE_URL,Constants.CATEGORY_BASE_URL);
     String requestURI = request.getRequestURI();
-    if (requestURI.contains("/api/auth/login")) {
-      filterChain.doFilter(request, response); // Continue without validating the JWT
-      return;
+    for(String urlString : urlList){
+      if (requestURI.startsWith(urlString)) {
+        filterChain.doFilter(request, response); // Continue without validating the JWT
+        return;
+      }
     }
+
 
     if (requestToken != null && requestToken.startsWith("Bearer")) {
       token = requestToken.substring(7);
