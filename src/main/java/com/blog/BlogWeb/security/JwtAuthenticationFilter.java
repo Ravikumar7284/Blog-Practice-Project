@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String token;
 
     List<String> urlList = Arrays.asList(Constants.LOGIN_URL, Constants.POST_BASE_URL,
-        Constants.CATEGORY_BASE_URL, Constants.USER_BASE_URL);
+        Constants.CATEGORY_BASE_URL, (Constants.USER_BASE_URL+"/register"));
     String requestURI = request.getRequestURI();
     for (String urlString : urlList) {
       if (requestURI.startsWith(urlString)) {
