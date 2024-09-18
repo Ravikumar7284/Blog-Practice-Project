@@ -37,15 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String username = null;
     String token;
 
-    List<String> urlList = Arrays.asList(Constants.LOGIN_URL,Constants.POST_BASE_URL,Constants.CATEGORY_BASE_URL);
+    List<String> urlList = Arrays.asList(Constants.LOGIN_URL, Constants.POST_BASE_URL,
+        Constants.CATEGORY_BASE_URL, Constants.USER_BASE_URL);
     String requestURI = request.getRequestURI();
-    for(String urlString : urlList){
+    for (String urlString : urlList) {
       if (requestURI.startsWith(urlString)) {
         filterChain.doFilter(request, response); // Continue without validating the JWT
         return;
       }
     }
-
 
     if (requestToken != null && requestToken.startsWith("Bearer")) {
       token = requestToken.substring(7);
@@ -58,22 +58,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       throw new IllegalArgumentException("Jwt token does not begin with Bearer");
     }
 
-    if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-      if(this.jwtTokenHelper.validateToken(token,userDetails)){
+      if (this.jwtTokenHelper.validateToken(token, userDetails)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-            new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
         usernamePasswordAuthenticationToken.setDetails(
             new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-      }else{
+      } else {
         throw new JwtException("Invalid Jwt token");
       }
-    }else{
-        throw new NullPointerException("Username is null");
+    } else {
+      throw new NullPointerException("Username is null");
     }
 
-    filterChain.doFilter(request,response);
+    filterChain.doFilter(request, response);
   }
 }

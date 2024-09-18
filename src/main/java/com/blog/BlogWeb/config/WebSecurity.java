@@ -42,7 +42,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET,Constants.USER_BASE_URL).hasAnyRole(Constants.ADMIN)
         .antMatchers(HttpMethod.GET,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
         .antMatchers(HttpMethod.POST,Constants.USER_BASE_URL+"/*/roles/*").hasAnyRole(Constants.ADMIN)
-        .antMatchers(HttpMethod.POST,Constants.USER_BASE_URL).hasAnyRole(Constants.ADMIN)
+        .antMatchers(HttpMethod.POST,Constants.USER_BASE_URL).permitAll()
         .antMatchers(HttpMethod.PUT,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
         .antMatchers(HttpMethod.DELETE,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)
 

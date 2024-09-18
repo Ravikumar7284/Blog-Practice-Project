@@ -1,12 +1,15 @@
 package com.blog.BlogWeb.service;
 
+import com.blog.BlogWeb.config.Constants;
 import com.blog.BlogWeb.dto.UserDto;
 import com.blog.BlogWeb.entity.Role;
 import com.blog.BlogWeb.entity.User;
 import com.blog.BlogWeb.exception.ResourceNotFoundException;
 import com.blog.BlogWeb.repository.RoleRepository;
 import com.blog.BlogWeb.repository.UserRepository;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class UserService {
   public UserDto createUser(UserDto userDto) {
     User user = this.dtoToUser(userDto);
     user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+    Set<Role> roles = new HashSet<>();
+    roles.add(new Role("ROLE_USER"));
+    user.setRole(roles);
     User savedUser = this.userRepository.save(user);
     return this.userToDto(savedUser);
   }
