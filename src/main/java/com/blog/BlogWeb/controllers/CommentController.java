@@ -1,10 +1,12 @@
 package com.blog.BlogWeb.controllers;
 
+import com.blog.BlogWeb.config.Constants;
 import com.blog.BlogWeb.dto.CommentDto;
 import com.blog.BlogWeb.dto.Response;
 import com.blog.BlogWeb.entity.Comment;
 import com.blog.BlogWeb.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
   @Autowired
+  private MessageSource messageSource;
+  @Autowired
   private CommentService commentService;
 
   @PostMapping("/{postId}")
@@ -31,7 +35,7 @@ public class CommentController {
   @DeleteMapping("/{commentId}")
   public Response deleteComment(@PathVariable Integer commentId) {
     this.commentService.deleteComment(commentId);
-    return new Response("comment is successfully deleted", true);
+    return new Response(messageSource.getMessage(Constants.DELETE_SUCCESS,null,null), true);
   }
 
 }

@@ -1,11 +1,13 @@
 package com.blog.BlogWeb.controllers;
 
+import com.blog.BlogWeb.config.Constants;
 import com.blog.BlogWeb.dto.UserDto;
 import com.blog.BlogWeb.dto.Response;
 import com.blog.BlogWeb.service.UserService;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 public class UserController {
 
+  @Autowired
+  private MessageSource messageSource;
   @Autowired
   private UserService userService;
 
@@ -40,7 +44,7 @@ public class UserController {
   @DeleteMapping("/{userId}")
   public ResponseEntity<Response> deleteUser(@PathVariable Integer userId) {
     this.userService.deleteUser(userId);
-    return new ResponseEntity<>(new Response("User Deleted Successfully", true), HttpStatus.OK);
+    return new ResponseEntity<>(new Response(messageSource.getMessage(Constants.DELETE_SUCCESS,null,null), true), HttpStatus.OK);
   }
 
   @GetMapping

@@ -1,6 +1,7 @@
 package com.blog.BlogWeb.security;
 
 import com.blog.BlogWeb.config.Constants;
+import com.blog.BlogWeb.exception.ApiException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -12,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +25,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+  private static final String BEARER_TOKEN_ERROR = "blog.jwt.invalid.bearer";
+  private static final String INVALID_TOKEN = "blog.jwt.invalid.token";
+  private static final String EMPTY_USERNAME = "blog.jwt.empty.username";
+
+  @Autowired
+  private MessageSource messageSource;
   @Autowired
   private UserDetailsService userDetailsService;
 
@@ -38,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String token;
 
     List<String> urlList = Arrays.asList(Constants.LOGIN_URL, Constants.POST_BASE_URL,
-        Constants.CATEGORY_BASE_URL, (Constants.USER_BASE_URL+"/register"));
+        Constants.CATEGORY_BASE_URL, (Constants.USER_BASE_URL + "/register"));
     String requestURI = request.getRequestURI();
     for (String urlString : urlList) {
       if (requestURI.startsWith(urlString)) {
@@ -55,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         exception.getLocalizedMessage();
       }
     } else {
-      throw new IllegalArgumentException("Jwt token does not begin with Bearer");
+      throw new ApiException(messageSource.getMessage(BEARER_TOKEN_ERROR,null,request.getLocale()));
     }
 
     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -69,10 +77,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
       } else {
-        throw new JwtException("Invalid Jwt token");
+        throw new ApiException(messageSource.getMessage(INVALID_TOKEN,null,request.getLocale()));
       }
     } else {
-      throw new NullPointerException("Username is null");
+      throw new ApiException(messageSource.getMessage(EMPTY_USERNAME,null,request.getLocale()));
     }
 
     filterChain.doFilter(request, response);

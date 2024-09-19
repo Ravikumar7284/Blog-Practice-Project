@@ -15,4 +15,5 @@ public class Constants {
   public static final String LOGIN_URL = "/api/auth/login";
   public static final String USER_BASE_URL = "/api/users";
   public static final String ROLE_BASE_URL = "/api/roles";
+  public static final String DELETE_SUCCESS = "blog.api.delete.success";
 }

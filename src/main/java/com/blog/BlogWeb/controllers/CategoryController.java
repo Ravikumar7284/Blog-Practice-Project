@@ -1,5 +1,6 @@
 package com.blog.BlogWeb.controllers;
 
+import com.blog.BlogWeb.config.Constants;
 import com.blog.BlogWeb.dto.CategoryDto;
 import com.blog.BlogWeb.dto.Response;
 import com.blog.BlogWeb.dto.UserDto;
@@ -7,6 +8,7 @@ import com.blog.BlogWeb.service.CategoryService;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
+  @Autowired
+  private MessageSource messageSource;
   @Autowired
   private CategoryService service;
 
@@ -41,7 +45,7 @@ public class CategoryController {
   @DeleteMapping("/{categoryId}")
   public ResponseEntity<Response> deleteUser(@PathVariable Integer categoryId) {
     this.service.deleteCategory(categoryId);
-    return new ResponseEntity<>(new Response("Category Deleted Successfully", true), HttpStatus.OK);
+    return new ResponseEntity<>(new Response(messageSource.getMessage(Constants.DELETE_SUCCESS,null,null), true), HttpStatus.OK);
   }
 
   @GetMapping

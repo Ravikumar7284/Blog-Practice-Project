@@ -12,6 +12,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/posts")
 public class PostController {
 
+  @Autowired
+  private MessageSource messageSource;
   @Autowired
   private PostService service;
   @Autowired
@@ -80,7 +83,7 @@ public class PostController {
   @DeleteMapping("/{postId}")
   public Response deletePost(@PathVariable Integer postId) {
     this.service.deletePost(postId);
-    return new Response("Post is successfully deleted", true);
+    return new Response(messageSource.getMessage(Constants.DELETE_SUCCESS,null,null), true);
   }
 
   @PutMapping("/{postId}")
@@ -107,10 +110,11 @@ public class PostController {
   }
 
   @GetMapping("/file/{fileName}")
-  public void downloadFile(@PathVariable("fileName") String fileName, HttpServletResponse response) throws IOException{
-    InputStream inputStream = this.fileService.getResource(path,fileName);
+  public void downloadFile(@PathVariable("fileName") String fileName, HttpServletResponse response)
+      throws IOException {
+    InputStream inputStream = this.fileService.getResource(path, fileName);
     response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-    StreamUtils.copy(inputStream,response.getOutputStream());
+    StreamUtils.copy(inputStream, response.getOutputStream());
   }
 
 

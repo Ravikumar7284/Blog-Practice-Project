@@ -2,6 +2,7 @@ package com.blog.BlogWeb.controllers;
 
 import com.blog.BlogWeb.dto.JwtAuthRequest;
 import com.blog.BlogWeb.dto.JwtAuthResponse;
+import com.blog.BlogWeb.exception.ApiException;
 import com.blog.BlogWeb.security.JwtTokenHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,10 +41,14 @@ public class AuthController {
     return new ResponseEntity<JwtAuthResponse>(jwtAuthResponse, HttpStatus.OK);
   }
 
-  private void authenticate(String email, String password) throws DisabledException, BadCredentialsException {
+  private void authenticate(String email, String password) throws DisabledException {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken
         (email, password);
-    this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+    try{
+      this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+    }catch (Exception ex){
+      throw new ApiException(ex.getMessage());
+    }
   }
 
 }
