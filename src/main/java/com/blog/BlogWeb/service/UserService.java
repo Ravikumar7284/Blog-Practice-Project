@@ -27,12 +27,13 @@ public class UserService {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private ModelMapper modelMapper;
+  private final String DEFAULT_ROLE = "ROLE_USER";
 
   public UserDto createUser(UserDto userDto) {
     User user = this.dtoToUser(userDto);
     user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
     Set<Role> roles = new HashSet<>();
-    roles.add(new Role("ROLE_USER"));
+    roles.add(new Role(DEFAULT_ROLE));
     user.setRole(roles);
     User savedUser = this.userRepository.save(user);
     return this.userToDto(savedUser);

@@ -18,9 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
@@ -37,7 +39,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeHttpRequests()
+
         .antMatchers(Constants.LOGIN_URL).permitAll()
+        .antMatchers(Constants.SWAGGER_URLS).permitAll()
 
         .antMatchers(HttpMethod.GET,Constants.USER_BASE_URL).hasAnyRole(Constants.ADMIN)
         .antMatchers(HttpMethod.GET,Constants.USER_BASE_URL+"/*").hasAnyRole(Constants.ADMIN)

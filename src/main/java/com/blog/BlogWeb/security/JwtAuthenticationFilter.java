@@ -3,9 +3,9 @@ package com.blog.BlogWeb.security;
 import com.blog.BlogWeb.config.Constants;
 import com.blog.BlogWeb.exception.ApiException;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.FilterChain;
@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.util.AntPathMatcher;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -45,11 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String username = null;
     String token;
 
-    List<String> urlList = Arrays.asList(Constants.LOGIN_URL, Constants.POST_BASE_URL,
-        Constants.CATEGORY_BASE_URL, (Constants.USER_BASE_URL + "/register"));
+    List<String> urlList = new ArrayList<>(Arrays.asList(Constants.LOGIN_URL, Constants.POST_BASE_URL,
+        Constants.CATEGORY_BASE_URL, (Constants.USER_BASE_URL + "/register")));
+    urlList.addAll(Arrays.asList(Constants.SWAGGER_URLS));
     String requestURI = request.getRequestURI();
+    AntPathMatcher antPathMatcher = new AntPathMatcher();
     for (String urlString : urlList) {
-      if (requestURI.startsWith(urlString)) {
+      if (antPathMatcher.match(urlString,requestURI)){
         filterChain.doFilter(request, response); // Continue without validating the JWT
         return;
       }

@@ -16,4 +16,11 @@ public class Constants {
   public static final String USER_BASE_URL = "/api/users";
   public static final String ROLE_BASE_URL = "/api/roles";
   public static final String DELETE_SUCCESS = "blog.api.delete.success";
+  public static final String[] SWAGGER_URLS = {
+      "/v3/api-docs",
+      "/v2/api-docs",
+      "/swagger-resources/**",
+      "/swagger-ui/**",
+      "/webjars/**"
+  };
 }
