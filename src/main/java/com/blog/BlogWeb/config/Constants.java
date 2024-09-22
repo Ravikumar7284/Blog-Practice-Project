@@ -23,4 +23,6 @@ public class Constants {
       "/swagger-ui/**",
       "/webjars/**"
   };
+  public static final String AUTHORIZATION_HEADER = "Authorization";
+  public static final String TOKEN_PERFIX = "Bearer";
 }
